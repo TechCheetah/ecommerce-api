@@ -175,14 +175,13 @@ class Database {
   
   getStats() {
     return {
-      totalProducts: this.data.products.length
+      totalProducts: this.data.products.length,  // ← AGREGAR ESTA COMA
       totalCarts: Object.keys(this.data.carts).length,
       totalOrders: this.data.orders.length,
       totalRevenue: this.data.orders.reduce((sum, order) => sum + (order.total || 0), 0),
       lowStockProducts: this.data.products.filter(p => p.stock < 10).length,
       lastUpdated: new Date().toISOString()
     };
-  }
 }
 
 // Exportar una instancia única (patrón Singleton)
