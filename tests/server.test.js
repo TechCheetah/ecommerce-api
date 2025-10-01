@@ -7,7 +7,7 @@ describe('Server Basic Tests', () => {
       .get('/')
       .expect(200);
 
-    expect(response.body.message).toBe('Welcome to Ecommerce API'); // SIN emoji
+    expect(response.body.message).toBe('🛒 Welcome to Ecommerce API'); // ✅ CON emoji
     expect(response.body.version).toBe('1.0.0');
     expect(response.body.status).toBe('Server running successfully!');
   });
@@ -19,7 +19,7 @@ describe('Server Basic Tests', () => {
 
     expect(response.body.status).toBe('OK');
     expect(response.body.service).toBe('Ecommerce API');
-    expect(response.body.uptime).toBeGreaterThanOrEqual(0);
+    expect(response.body.uptime.seconds).toBeGreaterThanOrEqual(0); // ✅ Acceder a .seconds
   });
 
   test('Should return 404 for non-existent endpoints', async () => {

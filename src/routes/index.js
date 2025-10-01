@@ -5,27 +5,22 @@ const router = express.Router();
 const productRoutes = require('./products');
 const cartRoutes = require('./cart');
 
+// Importar controladores
+const checkoutController = require('../controllers/checkoutController');
+const statsController = require('../controllers/statsController'); // ← AGREGAR ESTA LÍNEA
+
 // Usar rutas
 router.use('/products', productRoutes);
 router.use('/cart', cartRoutes);
 
 // Rutas de checkout directamente (sin archivo separado)
-const checkoutController = require('../controllers/checkoutController');
-
 router.post('/checkout', checkoutController.processCheckout);
 router.get('/orders', checkoutController.getOrders);
 router.get('/orders/:orderId', checkoutController.getOrderById);
 
-// Ruta de estadísticas
-router.get('/stats', (req, res) => {
-  const database = require('../models/database');
-  const stats = database.getStats();
-  
-  res.json({
-    success: true,
-    stats
-  });
-});
+// Rutas de estadísticas - REEMPLAZAR LA FUNCIÓN ANTERIOR
+router.get('/stats', statsController.getStats);
+router.get('/stats/date', statsController.getStatsByDate);
 
 // Ruta de información de API
 router.get('/', (req, res) => {
@@ -52,6 +47,7 @@ router.get('/', (req, res) => {
       },
       utils: {
         'GET /api/stats': 'Get database statistics',
+        'GET /api/stats/date': 'Get statistics by date range',
         'GET /api/': 'Get API information'
       }
     },

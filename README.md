@@ -16,10 +16,7 @@ Un sistema completo de ecommerce con API REST y frontend moderno.
 - 📱 **Diseño responsive**
 - 🌐 **Deploy listo para producción**
 
-## 🚀 Demo en Vivo
 
-- **🛍️ Tienda**: [https://tu-proyecto.vercel.app/app](https://tu-proyecto.vercel.app/app)
-- **📚 API Docs**: [https://tu-proyecto.vercel.app](https://tu-proyecto.vercel.app)
 
 ## 🛠️ Tecnologías
 

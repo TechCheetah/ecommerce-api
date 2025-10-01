@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ===== SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND =====
-app.use('/frontend', express.static(path.join(__dirname, '../frontend'), {
+app.use(express.static(path.join(__dirname, '../public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '1d' : '0',
   etag: true,
   lastModified: true
@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
     endpoints: {
       frontend: {
         'GET /app': 'Access the complete frontend application',
-        'GET /frontend/*': 'Static frontend assets'
+        'GET /public/*': 'Static frontend assets'
       },
       api: {
         'GET /api/': 'Detailed API documentation',
@@ -110,7 +110,7 @@ app.get('/', (req, res) => {
 
 // Ruta del frontend principal
 app.get('/app', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Health check endpoint
