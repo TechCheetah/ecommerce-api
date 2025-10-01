@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 // ===== MIDDLEWARE BÁSICO =====
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tu-proyecto.vercel.app', 'https://tu-dominio.com']
+    ? ['https://ecommerce-api-techcheetah.vercel.app', 'https://ecommerce-api.vercel.app']
     : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -32,16 +32,23 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // ===== SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND =====
-app.use(express.static(path.join(__dirname, '../public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : '0',
-  etag: true,
-  lastModified: true
-}));
+// En Vercel, los archivos estáticos se manejan diferente
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname, '../public'), {
+    maxAge: '0',
+    etag: true,
+    lastModified: true
+  }));
+}
 
 // ===== RUTAS PRINCIPALES =====
 
 // Ruta raíz - Información de la API
 app.get('/', (req, res) => {
+  const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://ecommerce-api-techcheetah.vercel.app'
+    : `http://localhost:${PORT}`;
+    
   res.json({
     message: '🛒 Welcome to Ecommerce API',
     version: '1.0.0',
@@ -60,8 +67,8 @@ app.get('/', (req, res) => {
     ],
     endpoints: {
       frontend: {
-        'GET /app': 'Access the complete frontend application',
-        'GET /public/*': 'Static frontend assets'
+        'GET /': 'Access the frontend application',
+        'GET /index.html': 'Frontend main page'
       },
       api: {
         'GET /api/': 'Detailed API documentation',
@@ -90,27 +97,16 @@ app.get('/', (req, res) => {
       sessionHeader: 'Include "session-id" header for cart management',
       example: 'session-id: user-123-abc',
       contentType: 'application/json',
-      frontend: 'Visit /app for the complete shopping experience'
+      frontend: 'Visit / for the complete shopping experience'
     },
     links: {
-      frontend: process.env.NODE_ENV === 'production' 
-        ? 'https://tu-proyecto.vercel.app/app'
-        : 'http://localhost:3000/app',
-      documentation: process.env.NODE_ENV === 'production'
-        ? 'https://tu-proyecto.vercel.app/api'
-        : 'http://localhost:3000/api',
-      health: process.env.NODE_ENV === 'production'
-        ? 'https://tu-proyecto.vercel.app/health'
-        : 'http://localhost:3000/health'
+      frontend: baseUrl,
+      documentation: `${baseUrl}/api`,
+      health: `${baseUrl}/health`
     },
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
-});
-
-// Ruta del frontend principal
-app.get('/app', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Health check endpoint
@@ -137,8 +133,7 @@ app.get('/health', (req, res) => {
     },
     endpoints: {
       api: '/api',
-      frontend: '/app', 
-      docs: '/',
+      frontend: '/', 
       stats: '/api/stats'
     }
   };
@@ -155,7 +150,6 @@ app.use('/api', apiRoutes);
 app.use('*', (req, res) => {
   const suggestions = [
     'GET / - API information and documentation',
-    'GET /app - Access the frontend application',
     'GET /health - Server health check',
     'GET /api - API endpoints documentation',
     'GET /api/products - View available products',
@@ -169,10 +163,9 @@ app.use('*', (req, res) => {
     message: `The requested endpoint ${req.method} ${req.originalUrl} was not found`,
     suggestions,
     availableEndpoints: {
-      frontend: '/app',
+      frontend: '/',
       api: '/api',
-      health: '/health',
-      documentation: '/'
+      health: '/health'
     },
     timestamp: new Date().toISOString()
   });
@@ -230,7 +223,6 @@ function generateRequestId() {
 // ===== GRACEFUL SHUTDOWN =====
 process.on('SIGTERM', () => {
   console.log('🛑 SIGTERM received. Starting graceful shutdown...');
-  // Aquí podrías cerrar conexiones de DB, etc.
   process.exit(0);
 });
 
@@ -250,9 +242,9 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// ===== INICIAR SERVIDOR =====
-if (process.env.NODE_ENV !== 'test') {
-  const server = app.listen(PORT, () => {
+// ===== INICIAR SERVIDOR (Solo en desarrollo) =====
+if (require.main === module) {
+  app.listen(PORT, () => {
     console.log('\n🚀 ===================================');
     console.log('🛒 ECOMMERCE API SERVER STARTED');
     console.log('=====================================');
@@ -260,7 +252,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`🕐 Started at: ${new Date().toLocaleString()}`);
     console.log('\n📡 Available Endpoints:');
-    console.log(`   🌐 Frontend:      http://localhost:${PORT}/app`);
+    console.log(`   🌐 Frontend:      http://localhost:${PORT}/`);
     console.log(`   📚 API Docs:      http://localhost:${PORT}/`);
     console.log(`   ❤️  Health Check: http://localhost:${PORT}/health`);
     console.log(`   📊 Statistics:    http://localhost:${PORT}/api/stats`);
@@ -272,11 +264,7 @@ if (process.env.NODE_ENV !== 'test') {
     console.log('\n🎯 Ready to handle requests!');
     console.log('=====================================\n');
   });
-
-  // Configurar timeouts
-  server.timeout = 30000; // 30 segundos
-  server.keepAliveTimeout = 65000; // 65 segundos
-  server.headersTimeout = 66000; // 66 segundos
 }
 
+// IMPORTANTE: Exportar para Vercel
 module.exports = app;
