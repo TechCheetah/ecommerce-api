@@ -2,6 +2,10 @@
 
 Un sistema completo de ecommerce con API REST y frontend moderno.
 
+## 🚀 Demo en Vivo
+
+🌐 **[Ver Demo en Vercel](https://ecommerce-api-iota-five.vercel.app/)**
+
 ## 🌟 Características
 
 - ✅ **API REST completa** con Node.js + Express
@@ -15,8 +19,6 @@ Un sistema completo de ecommerce con API REST y frontend moderno.
 - 🧪 **28 tests comprehensivos**
 - 📱 **Diseño responsive**
 - 🌐 **Deploy listo para producción**
-
-
 
 ## 🛠️ Tecnologías
 
@@ -35,6 +37,10 @@ Un sistema completo de ecommerce con API REST y frontend moderno.
 - **Responsive Design**
 
 ## 📋 API Endpoints
+
+### Base URL
+- **Producción**: `https://ecommerce-api-iota-five.vercel.app`
+- **Local**: `http://localhost:3000`
 
 ### Productos
 - `POST /api/products` - Crear producto
@@ -67,7 +73,7 @@ Un sistema completo de ecommerce con API REST y frontend moderno.
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/ecommerce-api.git
+git clone https://github.com/TechCheetah/ecommerce-api.git
 cd ecommerce-api
 
 # Instalar dependencias
