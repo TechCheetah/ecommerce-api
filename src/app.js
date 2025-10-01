@@ -11,7 +11,11 @@ const PORT = process.env.PORT || 3000;
 // ===== MIDDLEWARE BÁSICO =====
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://ecommerce-api-techcheetah.vercel.app', 'https://ecommerce-api.vercel.app']
+    ? [
+        'https://ecommerce-api-iota-five.vercel.app',
+        'https://ecommerce-api-*.vercel.app',
+        'https://*.vercel.app'
+      ]
     : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -46,7 +50,7 @@ if (process.env.NODE_ENV !== 'production') {
 // Ruta raíz - Información de la API
 app.get('/', (req, res) => {
   const baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://ecommerce-api-techcheetah.vercel.app'
+    ? 'https://ecommerce-api-iota-five.vercel.app'
     : `http://localhost:${PORT}`;
     
   res.json({
